@@ -13,11 +13,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/public/$1"
-    },
-    {
-      "src": "/favicon.ico",
-      "dest": "/public/favicon.ico"
+      "dest": "/public/index.html" 
     }
   ]
 }
