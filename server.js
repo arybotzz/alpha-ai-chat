@@ -5,12 +5,13 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const midtransClient = require('midtrans-client');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
 app.use(cors({ origin: true }));
 app.use(express.json({ limit: '10mb' }));
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Rate limit
 let chatRequests = new Map();
@@ -48,7 +49,7 @@ async function startServer() {
         console.error('DB error:', err.message);
     }
     if (process.env.GOOGLE_API_KEY) {
-        genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+        genAI = new Google  GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
     }
     if (process.env.MIDTRANS_SERVER_KEY && process.env.MIDTRANS_CLIENT_KEY) {
         snap = new midtransClient.Snap({
@@ -73,6 +74,7 @@ const auth = async (req, res, next) => {
     }
 };
 
+// Register
 app.post('/api/register', async (req, res) => {
     if (mongoose.connection.readyState !== 1) return res.status(503).json({ message: 'DB_CONNECTION_FAILED' });
     const { email, password } = req.body;
@@ -89,6 +91,7 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
+// Login
 app.post('/api/login', async (req, res) => {
     if (mongoose.connection.readyState !== 1) return res.status(503).json({ message: 'DB_CONNECTION_FAILED' });
     const { email, password } = req.body;
@@ -104,6 +107,7 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+// User me
 app.get('/api/user/me', auth, (req, res) => {
     res.json({
         isPremium: req.user.isPremium,
@@ -113,6 +117,7 @@ app.get('/api/user/me', auth, (req, res) => {
     });
 });
 
+// Chat
 app.post('/api/chat', auth, async (req, res) => {
     const { message, mode = 'strict', chatId } = req.body;
     const user = req.user;
@@ -167,12 +172,14 @@ app.post('/api/chat', auth, async (req, res) => {
     }
 });
 
+// Get chat
 app.get('/api/chat/:id', auth, async (req, res) => {
     const chat = req.user.chats.find(c => c._id?.toString() === req.params.id || c.id === req.params.id);
     if (!chat) return res.status(404).json({ message: 'Chat not found' });
     res.json(chat);
 });
 
+// New chat
 app.post('/api/chat/new', auth, async (req, res) => {
     const newChat = { title: 'New Chat', messages: [] };
     req.user.chats.unshift(newChat);
@@ -180,6 +187,7 @@ app.post('/api/chat/new', auth, async (req, res) => {
     res.json({ id: newChat._id || newChat.id });
 });
 
+// Delete chat
 app.delete('/api/chat/:id', auth, async (req, res) => {
     const index = req.user.chats.findIndex(c => c._id?.toString() === req.params.id || c.id === req.params.id);
     if (index > -1) {
@@ -189,6 +197,7 @@ app.delete('/api/chat/:id', auth, async (req, res) => {
     res.json({ success: true });
 });
 
+// Midtrans token
 app.post('/api/midtrans/token', auth, async (req, res) => {
     if (!snap) return res.status(503).json({ message: 'Payment unavailable' });
     const transaction = {
@@ -203,6 +212,7 @@ app.post('/api/midtrans/token', auth, async (req, res) => {
     }
 });
 
+// Midtrans notification
 app.post('/api/midtrans/notification', express.raw({ type: 'application/json' }), async (req, res) => {
     try {
         const notification = JSON.parse(req.body.toString());
@@ -222,10 +232,9 @@ app.post('/api/midtrans/notification', express.raw({ type: 'application/json' })
     }
 });
 
-// Vercel fallback
+// Fallback: Serve index.html for SPA
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-const path = require('path');
 module.exports = app;
