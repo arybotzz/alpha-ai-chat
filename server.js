@@ -49,7 +49,7 @@ async function startServer() {
         console.error('DB error:', err.message);
     }
     if (process.env.GOOGLE_API_KEY) {
-        genAI = new Google  GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+        genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
     }
     if (process.env.MIDTRANS_SERVER_KEY && process.env.MIDTRANS_CLIENT_KEY) {
         snap = new midtransClient.Snap({
@@ -232,7 +232,7 @@ app.post('/api/midtrans/notification', express.raw({ type: 'application/json' })
     }
 });
 
-// Fallback: Serve index.html for SPA
+// Fallback for SPA
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
