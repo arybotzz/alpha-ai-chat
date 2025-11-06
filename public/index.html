@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alpha AI by Ryy_Xploid</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 font-sans flex h-screen">
+    <!-- Hamburger -->
+    <button id="hamburger" class="fixed top-4 left-4 z-50 md:hidden bg-blue-600 text-white p-3 rounded-full shadow-lg">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-64 bg-gray-900 text-white p-5 fixed inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform z-40 flex flex-col">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-xl font-bold">Alpha AI</h1>
+            <button id="close-sidebar" class="md:hidden"><i class="fas fa-times"></i></button>
+        </div>
+        <button id="new-chat" class="w-full bg-blue-600 py-2 mb-2 rounded">+ New Chat</button>
+        <div id="chat-list" class="flex-1 overflow-y-auto space-y-1"></div>
+        <button id="upgrade" class="w-full bg-green-600 py-2 mb-2 rounded">Upgrade Premium</button>
+        <button id="logout" class="w-full bg-red-600 py-2 mb-2 rounded">Logout</button>
+        <div class="mt-auto text-xs text-gray-400">
+            <a href="/privacy.html" class="block mb-1">Privacy</a>
+            <a href="/terms.html" class="block">Terms</a>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden md:hidden"></div>
+
+    <!-- Main -->
+    <div class="flex-1 flex flex-col ml-0 md:ml-64">
+        <div id="status-bar" class="bg-blue-600 text-white p-2 text-center text-sm">
+            <span id="user-status">Free | 10 chat tersisa</span>
+        </div>
+        <div id="chat-container" class="flex-1 p-4 overflow-y-auto bg-gray-50"></div>
+        <form id="chat-form" class="p-4 bg-white border-t flex gap-2">
+            <input id="chat-input" class="flex-1 border p-2 rounded" placeholder="Ketik pesan...">
+            <button type="submit" class="bg-blue-600 text-white px-4 rounded">Kirim</button>
+        </form>
+        <footer class="p-3 text-center text-xs text-gray-500 bg-gray-100">
+            © 2025 <strong>Alpha AI by Ryy_Xploid</strong>
+        </footer>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center hidden z-50">
+        <div class="bg-white p-6 rounded w-96">
+            <h2 id="auth-title" class="text-xl mb-4">Daftar</h2>
+            <form id="auth-form">
+                <input id="email" type="email" class="w-full border p-2 mb-2" placeholder="Email" required>
+                <input id="password" type="password" class="w-full border p-2 mb-2" placeholder="Password" required>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2">Submit</button>
+            </form>
+            <button id="toggle-auth" class="mt-2 text-blue-600 w-full text-left">Ke Login</button>
+            <p class="text-xs mt-2">Ingat email & password Anda.</p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+      const script = document.createElement('script');
+      script.src = 'https://app.sandbox.midtrans.com/snap/snap.js';
+      script.setAttribute('data-client-key', process.env.MIDTRANS_CLIENT_KEY || 'SB-Mid-client-fallback');
+      document.head.appendChild(script);
+    </script>
+</body>
+</html>
